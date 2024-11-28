@@ -41,6 +41,7 @@ jobs:
 
   hello_world:
     runs-on: ubuntu-latest
+    needs: set-variables
     env:
       ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
     steps:
