@@ -2,11 +2,46 @@ name: Cron Job
 on:
   push:
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '5 * * * *'
+   workflow_dispatch:
+    inputs:
+      required: true
+      type: choice
+        options:
+          - cn1000
+          - cn8000
+        default: cn8000
 
 jobs:
+
+  set-variables:
+    name: Set variables
+    runs-on: lnxbuild-gh
+    outputs:
+    environment: ${{ steps.set-output.outputs.environment }}
+    steps:
+      - name: Set default environment for scheduled workflow
+        id: set-output
+        run: |
+            if [ "${{ github.event_name }}" == "schedule" ]; then
+              if [ "${{ github.event.schedule }}" == "'5 * * * *'" ]; then
+                echo "Scheduled run detected on Friday. Setting environment: cn1000"
+                echo "environment=cn1000" >> $GITHUB_OUTPUT
+              else
+                echo "No specific environment set for this schedule."
+                exit 1
+              fi
+            elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+              echo "Manual run detected. Setting environment to: ${{ github.event.inputs.environment }}"
+              echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+            else
+              echo "Unknown event type. Failing workflow."
+              exit 1
+
   hello_world:
     runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
     steps:
       - name: Echo current time
-        run: echo "The current server time is $(date)"
+        run: echo "The current server time is $(date) $ENVIRONMENT"
