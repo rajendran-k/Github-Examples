@@ -39,4 +39,7 @@ jobs:
       ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
     steps:
       - name: Echo current time
-        run: echo "The current server time is $(date). Environment: $ENVIRONMENT"
+        run: |
+          echo "Starting the line"
+          echo $ENVIRONMENT
+
