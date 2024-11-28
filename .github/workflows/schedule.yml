@@ -28,6 +28,7 @@ jobs:
           else
             echo "Manual run detected. Setting environment to: ${{ github.event.inputs.environment }}"
             echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          fi
 
 
   hello_world:
