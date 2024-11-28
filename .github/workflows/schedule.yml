@@ -3,10 +3,11 @@ on:
   push:
   schedule:
     - cron: '5 * * * *'
-   workflow_dispatch:
+  workflow_dispatch:
     inputs:
-      required: true
-      type: choice
+      environment:
+        required: true
+        type: choice
         options:
           - cn1000
           - cn8000
