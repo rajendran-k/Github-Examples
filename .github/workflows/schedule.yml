@@ -17,7 +17,7 @@ jobs:
 
   set-variables:
     name: Set variables
-    runs-on: lnxbuild-gh
+    runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.set-output.outputs.environment }}
     steps:
