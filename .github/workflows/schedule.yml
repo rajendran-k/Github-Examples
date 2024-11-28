@@ -20,7 +20,8 @@ jobs:
           - { name: "cnboieng", schedule: "0 3 * * *" }
     steps:
       - name: Check Environment
-        run: echo "Running for environment: ${{ matrix.env.name }} on schedule: ${{ matrix.env.schedule }}"
+        run: |
+          echo "Running for environment: ${{ matrix.env.name }} on schedule: ${{ matrix.env.schedule }}"
 
       - name: Run Script
         run: |
