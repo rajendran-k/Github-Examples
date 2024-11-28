@@ -1,7 +1,7 @@
 name: Cron Job
 on:
   schedule:
-    - cron: '5 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -10,6 +10,8 @@ on:
         options:
           - cn1000
           - cn8000
+          - cn8006
+          - cn8008
         default: cn8000
 
 jobs:
@@ -23,8 +25,8 @@ jobs:
         id: set-output
         run: |
           if [ "${{ github.event_name }}" == "schedule" ]; then
-            echo "Scheduled run detected. Setting environment: cn1000"
-            echo "environment=cn1000" >> $GITHUB_OUTPUT
+            echo "Scheduled run detected. Setting environment: cn8000"
+            echo "environment=cn8000" >> $GITHUB_OUTPUT
           else
             echo "Manual run detected. Setting environment to: ${{ github.event.inputs.environment }}"
             echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
