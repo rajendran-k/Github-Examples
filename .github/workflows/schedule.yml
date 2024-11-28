@@ -12,6 +12,7 @@ on:
           - cn8000
           - cn8006
           - cn8008
+          - cnverizon
         default: cn8000
 
 jobs:
@@ -25,8 +26,10 @@ jobs:
         id: set-output
         run: |
           if [ "${{ github.event_name }}" == "schedule" ]; then
-            echo "Scheduled run detected. Setting environment: cn8000"
-            echo "environment=cn8000" >> $GITHUB_OUTPUT
+            if [ ${{ github.event.schedule }} == '*/5 * * * *' ]; then
+              echo "Scheduled run detected. Setting environment: cnverizon"
+              echo "environment=cnverizon" >> $GITHUB_OUTPUT
+            fi
           else
             echo "Manual run detected. Setting environment to: ${{ github.event.inputs.environment }}"
             echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
