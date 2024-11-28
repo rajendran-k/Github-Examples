@@ -1,49 +1,34 @@
 name: Cron Job
 on:
   schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
-    inputs:
-      environment:
-        required: true
-        type: choice
-        options:
-          - cn1000
-          - cn8000
-          - cn8006
-          - cn8008
-          - cnverizon
-        default: cn8000
+    # Schedule for Environment 1 (e.g., daily at 1:00 AM)
+    - cron: "*/5 * * * *"
+    # Schedule for Environment 2 (e.g., daily at 2:00 AM)
+    - cron: "0 2 * * *"
+    # Schedule for Environment 3 (e.g., daily at 3:00 AM)
+    - cron: "0 3 * * *"
 
 jobs:
-  set-variables:
-    name: Set variables
-    runs-on: ubuntu-latest
-    outputs:
-      environment: ${{ steps.set-output.outputs.environment }}
-    steps:
-      - name: Set default environment for scheduled workflow
-        id: set-output
-        run: |
-          if [ "${{ github.event_name }}" == "schedule" ]; then
-            if [ "${{ github.event.schedule }}" == "*/5 * * * *"" ]; then
-              echo "Scheduled run detected. Setting environment: cnverizon"
-              echo "environment=cnverizon" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "Manual run detected. Setting environment to: ${{ github.event.inputs.environment }}"
-            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
-          fi
-
-
   hello_world:
     runs-on: ubuntu-latest
-    needs: set-variables
-    env:
-      ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
+    strategy:
+      matrix:
+        env:
+          # Map cron times to environments
+          - { name: "cnverizon", schedule: "*/5 * * * *" }
+          - { name: "cnpwc", schedule: "0 2 * * *" }
+          - { name: "cnboieng", schedule: "0 3 * * *" }
     steps:
-      - name: Echo current time
+      - name: Check Environment
+        run: echo "Running for environment: ${{ matrix.env.name }} on schedule: ${{ matrix.env.schedule }}"
+
+      - name: Run Script
         run: |
-          echo "Starting the line"
-          echo $ENVIRONMENT
+          if [ "${{ matrix.env.name }}" == "cnverizon" ]; then
+            echo "Execute tasks for cnverizon";
+          elif [ "${{ matrix.env.name }}" == "cnpwc" ]; then
+            echo "Execute tasks for cnpwc";
+          elif [ "${{ matrix.env.name }}" == "cnboieng" ]; then
+            echo "Execute tasks for cnboieng";
+          fi
 
