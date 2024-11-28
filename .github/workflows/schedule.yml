@@ -24,16 +24,20 @@ jobs:
           esac
 
       - name: Check Environment
-        run: echo "Running for environment: ${{ env.env }}"
+        run: |
+          echo "Running for environment: ${{ env.env }}"
 
       - name: Run Script
         if: env.env == 'cnverizon'
-        run: echo "Execute tasks for cnverizon"
+        run: |
+          echo "Execute tasks for cnverizon"
 
       - name: Run Script
         if: env.env == 'cnpwc'
-        run: echo "Execute tasks for cnpwc"
+        run: |
+          echo "Execute tasks for cnpwc"
 
       - name: Run Script
         if: env.env == 'cnboieng'
-        run: echo "Execute tasks for cnboieng"
+        run: |
+          echo "Execute tasks for cnboieng"
