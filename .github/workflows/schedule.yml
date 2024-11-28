@@ -25,12 +25,10 @@ jobs:
           if [ "${{ github.event_name }}" == "schedule" ]; then
             echo "Scheduled run detected. Setting environment: cn1000"
             echo "environment=cn1000" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          else [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             echo "Manual run detected. Setting environment to: ${{ github.event.inputs.environment }}"
             echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
-          else
-            echo "Unknown event type. Failing workflow."
-            exit 1
+
 
   hello_world:
     runs-on: ubuntu-latest
