@@ -1,7 +1,8 @@
 name: Cron Job
+
 on:
   schedule:
-    # Schedule for Environment 1 (e.g., daily at 1:00 AM)
+    # Schedule for Environment 1 (e.g., every 5 minutes)
     - cron: "*/5 * * * *"
     # Schedule for Environment 2 (e.g., daily at 2:00 AM)
     - cron: "0 2 * * *"
@@ -11,25 +12,28 @@ on:
 jobs:
   hello_world:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        env:
-          # Map cron times to environments
-          - { name: "cnverizon", schedule: "*/5 * * * *" }
-          - { name: "cnpwc", schedule: "0 2 * * *" }
-          - { name: "cnboieng", schedule: "0 3 * * *" }
     steps:
-      - name: Check Environment
+      - name: Determine Triggered Environment
+        id: determine_env
         run: |
-          echo "Running for environment: ${{ matrix.env.name }} on schedule: ${{ matrix.env.schedule }}"
+          case "${{ github.event.schedule }}" in
+            "*/5 * * * *") echo "env=cnverizon" >> $GITHUB_ENV ;;
+            "0 2 * * *") echo "env=cnpwc" >> $GITHUB_ENV ;;
+            "0 3 * * *") echo "env=cnboieng" >> $GITHUB_ENV ;;
+            *) echo "Unknown schedule triggered"; exit 1 ;;
+          esac
+
+      - name: Check Environment
+        run: echo "Running for environment: ${{ env.env }}"
 
       - name: Run Script
-        run: |
-          if [ "${{ matrix.env.name }}" == "cnverizon" ]; then
-            echo "Execute tasks for cnverizon";
-          elif [ "${{ matrix.env.name }}" == "cnpwc" ]; then
-            echo "Execute tasks for cnpwc";
-          elif [ "${{ matrix.env.name }}" == "cnboieng" ]; then
-            echo "Execute tasks for cnboieng";
-          fi
+        if: env.env == 'cnverizon'
+        run: echo "Execute tasks for cnverizon"
 
+      - name: Run Script
+        if: env.env == 'cnpwc'
+        run: echo "Execute tasks for cnpwc"
+
+      - name: Run Script
+        if: env.env == 'cnboieng'
+        run: echo "Execute tasks for cnboieng"
