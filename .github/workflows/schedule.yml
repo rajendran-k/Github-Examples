@@ -19,7 +19,7 @@ jobs:
     name: Set variables
     runs-on: lnxbuild-gh
     outputs:
-    environment: ${{ steps.set-output.outputs.environment }}
+      environment: ${{ steps.set-output.outputs.environment }}
     steps:
       - name: Set default environment for scheduled workflow
         id: set-output
