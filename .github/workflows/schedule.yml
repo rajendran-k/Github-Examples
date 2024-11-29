@@ -20,7 +20,7 @@ jobs:
         id: set-output
         run: |
           case "${{ github.event.schedule }}" in
-            "0 5 * * 1") echo "environment=cnverizon" >> $GITHUB_OUTPUT ;;
+            "*/5 * * * *") echo "environment=cnverizon" >> $GITHUB_OUTPUT ;;
             *) echo "Unknown schedule triggered"; exit 1 ;;
           esac
 
