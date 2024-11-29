@@ -11,7 +11,7 @@ on:
 
 jobs:
   set-variables:
-    name: hello_world
+    name: Set Variables
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.set-output.outputs.environment }}
@@ -19,32 +19,36 @@ jobs:
       - name: Determine Triggered Environment
         id: set-output
         run: |
-          case "${{ github.event.schedule }}" in
-            "*/5 * * * *") echo "environment=CNVERIZON" >> $GITHUB_OUTPUT ;;
+          CURRENT_TIME=$(date +"%H:%M")
+          case "$CURRENT_TIME" in
+            "*/5") echo "environment=CNVERIZON" >> $GITHUB_OUTPUT ;;
+            "02:00") echo "environment=CNPWC" >> $GITHUB_OUTPUT ;;
+            "03:00") echo "environment=CNBOIENG" >> $GITHUB_OUTPUT ;;
             *) echo "Unknown schedule triggered"; exit 1 ;;
           esac
+
   run_test:
-    name: Run CFLOW suite
+    name: Run CFLOW Suite
     runs-on: lnxbuild-gh
     needs: set-variables
     env:
       ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
-      steps:
-        - name: Check Environment
-          run: |
-            echo "Running for environment: ${{ env.ENVIRONMENT }}"
+    steps:
+      - name: Check Environment
+        run: |
+          echo "Running for environment: ${{ env.ENVIRONMENT }}"
 
-        - name: Run Script
-          if: env.ENVIRONMENT == 'CNVERIZON'
-          run: |
-            echo "Execute tasks for cnverizon"
+      - name: Run Script for CNVERIZON
+        if: env.ENVIRONMENT == 'CNVERIZON'
+        run: |
+          echo "Execute tasks for CNVERIZON"
 
-        - name: Run Script
-          if: env.ENVIRONMENT == 'cnpwc'
-          run: |
-            echo "Execute tasks for cnpwc"
+      - name: Run Script for CNPWC
+        if: env.ENVIRONMENT == 'CNPWC'
+        run: |
+          echo "Execute tasks for CNPWC"
 
-        - name: Run Script
-          if: env.ENVIRONMENT == 'cnboieng'
-          run: |
-            echo "Execute tasks for cnboieng"
+      - name: Run Script for CNBOIENG
+        if: env.ENVIRONMENT == 'CNBOIENG'
+        run: |
+          echo "Execute tasks for CNBOIENG"
