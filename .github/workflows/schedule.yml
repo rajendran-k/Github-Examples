@@ -3,7 +3,7 @@ name: Cron Job
 on:
   schedule:
     # Schedule for Environment 1 (e.g., every 5 minutes)
-    - cron: "*/5 * * * *"
+    - cron: "*/2 * * * *"
     # Schedule for Environment 2 (e.g., daily at 2:00 AM)
     - cron: "0 2 * * *"
     # Schedule for Environment 3 (e.g., daily at 3:00 AM)
@@ -19,9 +19,8 @@ jobs:
       - name: Determine Triggered Environment
         id: set-output
         run: |
-          CURRENT_TIME=$(date +"%H:%M")
-          case "$CURRENT_TIME" in
-            "*/5") echo "environment=CNVERIZON" >> $GITHUB_OUTPUT ;;
+          case "${{ github.event.schedule }}" in
+            "*/2 * * * *") echo "environment=CNVERIZON" >> $GITHUB_OUTPUT ;;
             "02:00") echo "environment=CNPWC" >> $GITHUB_OUTPUT ;;
             "03:00") echo "environment=CNBOIENG" >> $GITHUB_OUTPUT ;;
             *) echo "Unknown schedule triggered"; exit 1 ;;
@@ -29,7 +28,7 @@ jobs:
 
   run_test:
     name: Run CFLOW Suite
-    runs-on: lnxbuild-gh
+    runs-on: ubuntu-latest
     needs: set-variables
     env:
       ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
