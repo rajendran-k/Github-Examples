@@ -33,7 +33,8 @@ jobs:
     steps:
       - name: Check Environment
         run: |
-          echo "Running for environment: ${{ env.ENVIRONMENT }}"
+          echo Running at new env "$ENVIRONMENT"
+
 
       - name: Run Script for CNVERIZON
         if: env.ENVIRONMENT == 'CNVERIZON'
