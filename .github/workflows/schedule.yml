@@ -21,8 +21,6 @@ jobs:
         run: |
           case "${{ github.event.schedule }}" in
             "*/5 * * * *") echo "environment=CNVERIZON" >> $GITHUB_OUTPUT ;;
-            "02:00") echo "environment=CNPWC" >> $GITHUB_OUTPUT ;;
-            "03:00") echo "environment=CNBOIENG" >> $GITHUB_OUTPUT ;;
             *) echo "Unknown schedule triggered"; exit 1 ;;
           esac
 
