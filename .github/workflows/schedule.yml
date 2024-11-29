@@ -19,11 +19,10 @@ jobs:
       - name: Determine Triggered Environment
         id: set-output
         run: |
-          if [[ "${{ github.event_name }}" == "schedule" ]]; then
-            echo "environment=cnverizon" >> $GITHUB_OUTPUT
-          else
-            echo "Unknown trigger source"; exit 1
-          fi
+          case "${{ github.event.schedule }}" in
+            "0 5 * * 1") echo "environment=cnverizon" >> $GITHUB_OUTPUT ;;
+            *) echo "Unknown schedule triggered"; exit 1 ;;
+          esac
 
   run_test:
     name: Run CFLOW Suite
@@ -35,7 +34,7 @@ jobs:
       - name: Check Environment
         run: |
           SUITE_NAME="UEM CFLOW tests | $ENVIRONMENT | main"
-          echo Running at latest and fine tech stack $ENVIRONMENT
+          echo Running at latest last tech stack ${{ env.ENVIRONMENT }}
 
 
       - name: Run Script for CNVERIZON
