@@ -10,34 +10,41 @@ on:
     - cron: "0 3 * * *"
 
 jobs:
-  hello_world:
+  set-variables:
+    name: hello_world
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-output.outputs.environment }}
     steps:
       - name: Determine Triggered Environment
-        id: determine_env
+        id: set-output
         run: |
           case "${{ github.event.schedule }}" in
-            "*/5 * * * *") echo "env=cnverizon" >> $GITHUB_ENV ;;
-            "0 2 * * *") echo "env=cnpwc" >> $GITHUB_ENV ;;
-            "0 3 * * *") echo "env=cnboieng" >> $GITHUB_ENV ;;
+            "*/5 * * * *") echo "environment=CNVERIZON" >> $GITHUB_OUTPUT ;;
             *) echo "Unknown schedule triggered"; exit 1 ;;
           esac
+  run_test:
+    name: Run CFLOW suite
+    runs-on: lnxbuild-gh
+    needs: set-variables
+    env:
+      ENVIRONMENT: ${{ needs.set-variables.outputs.environment }}
+      steps:
+        - name: Check Environment
+          run: |
+            echo "Running for environment: ${{ env.ENVIRONMENT }}"
 
-      - name: Check Environment
-        run: |
-          echo "Running for environment: ${{ env.env }}"
+        - name: Run Script
+          if: env.ENVIRONMENT == 'CNVERIZON'
+          run: |
+            echo "Execute tasks for cnverizon"
 
-      - name: Run Script
-        if: env.env == 'cnverizon'
-        run: |
-          echo "Execute tasks for cnverizon"
+        - name: Run Script
+          if: env.ENVIRONMENT == 'cnpwc'
+          run: |
+            echo "Execute tasks for cnpwc"
 
-      - name: Run Script
-        if: env.env == 'cnpwc'
-        run: |
-          echo "Execute tasks for cnpwc"
-
-      - name: Run Script
-        if: env.env == 'cnboieng'
-        run: |
-          echo "Execute tasks for cnboieng"
+        - name: Run Script
+          if: env.ENVIRONMENT == 'cnboieng'
+          run: |
+            echo "Execute tasks for cnboieng"
