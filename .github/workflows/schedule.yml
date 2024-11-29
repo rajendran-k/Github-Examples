@@ -33,7 +33,8 @@ jobs:
     steps:
       - name: Check Environment
         run: |
-          echo Running at new env "$ENVIRONMENT"
+          SUITE_NAME="UEM CFLOW tests | $ENVIRONMENT | main"
+          echo Running at latest tech stack $ENVIRONMENT
 
 
       - name: Run Script for CNVERIZON
