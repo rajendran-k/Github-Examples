@@ -20,7 +20,7 @@ jobs:
         run: |
           echo $MESSAGE
           echo "Server to run is: $ENVIRONMENT"
-          echo "::set-output name=ENVIRONMENT::$ENVIRONMENT"  # Set output
+          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_OUTPUT  # Set output
 
   test_run:
     needs: run_if_success
