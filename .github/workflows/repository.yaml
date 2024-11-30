@@ -1,28 +1,31 @@
 name: Repository Trigger
+
 on:
-    repository_dispatch: 
-        types: [test_result]
-            
+  repository_dispatch:
+    types: [test_result]
+
 jobs:
-    run_if_sucess:
-        if: ${{ github.event.client_payload.passed }}
-        runs-on: ubuntu-latest
-        outputs:
-            ENVIRONMENT: ${{ steps.ugrade_status.outputs.ENVIRONMENT}}
-            
-        steps:
-           - name: check_updrade_status
-             id: ugrade_status
-             env:
-                MESSAGE: ${{ github.event.client_payload.message }}
-                ENVIRONMENT: ${{ github.event.client_payload.env }}
-             run: |
-                    echo $MESSAGE
-                    echo server to run is $ENVIRONMENT
-    test_run:
-        needs: run_if_sucess
-        runs-on: ubuntu-latest
-        steps:
-            - name: test_runs
-              run: |
-                echo "The shared variable is: ${{ needs.run_if_sucess.outputs.ENVIRONMENT }}"
+  run_if_success:
+    if: ${{ github.event.client_payload.passed }}
+    runs-on: ubuntu-latest
+    outputs:
+      ENVIRONMENT: ${{ steps.upgrade_status.outputs.ENVIRONMENT }}
+
+    steps:
+      - name: Check Upgrade Status
+        id: upgrade_status
+        env:
+          MESSAGE: ${{ github.event.client_payload.message }}
+          ENVIRONMENT: ${{ github.event.client_payload.env }}
+        run: |
+          echo $MESSAGE
+          echo "Server to run is: $ENVIRONMENT"
+          echo "::set-output name=ENVIRONMENT::$ENVIRONMENT"  # Set output
+
+  test_run:
+    needs: run_if_success
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Runs
+        run: |
+          echo "The shared variable is: ${{ needs.run_if_success.outputs.ENVIRONMENT }}"
