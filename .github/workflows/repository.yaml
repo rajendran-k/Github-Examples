@@ -1,0 +1,13 @@
+name: Repository Trigger
+on:
+    repository_dispatch: 
+        types: [test_result]
+            
+jobs:
+    run_if_sucess:
+        if: ${{ !github.event.client_payload.passed }}
+        runs-on: ubuntu-latest
+        steps:
+          - env:
+              MESSAGE: ${{ github.event.client_payload.message }}
+            run: echo $MESSAGE
