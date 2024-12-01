@@ -18,5 +18,22 @@ jobs:
             - name: List Docker images
               run: |
                     docker images
+            - name: Run docker
+              run: |
+                    docker run -d -p 8000:8000 --name fastapi-welcome-container fastapi-welcome:latest
+                    sleep 40 # Wait for 5 seconds to ensure the app is up and running
+            - name: Test the FastAPI endpoint
+              run: |
+                    HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/)
+                    if [ "$HTTP_STATUS" -ne 200 ]; then
+                        echo "Endpoint did not return 200 OK. Status: $HTTP_STATUS"
+                        exit 1
+                    else
+                        echo "Endpoint returned 200 OK!"
+                    fi
+            - name: Clean up Docker container
+              run: |
+                    docker stop fastapi-welcome-container
+                    docker rm fastapi-welcome-container
 
   
