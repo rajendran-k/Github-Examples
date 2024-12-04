@@ -3,48 +3,34 @@ name: Customer Flow Regressions
 on:
   schedule:
     - cron: "*/5 * * * *" # Runs every Monday at 5 AM
-  workflow_dispatch:
-    inputs:
-      server:
-        description: "Server name for the tests"
-        required: true
-        default: "cnverizon"
-      test_query:
-        description: "Test query to filter tests"
-        required: true
-        default: "verizon"
+  repository_dispatch:
+    types: [trigger-regression-tests]
 
 jobs:
   trigger_dispatch:
     if: github.event_name == 'schedule'
-    name: Trigger Workflow Dispatch
+    name: Trigger Repository Dispatch
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger workflow_dispatch
+      - name: Trigger repository dispatch with server details
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{
-                  "ref": "main",
-                  "inputs": {
-                    "server": "cnverizon",
-                    "test_query": "verizon"
-                  }
-                }' \
-            https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow_id }}/dispatches
+            -d '{"event_type": "trigger-regression-tests", "client_payload": {"server": "cnverizon", "test_query": "verizon"}}' \
+            https://api.github.com/repos/${{ github.repository }}/dispatches
 
   test_cflow:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'repository_dispatch' && github.event.action == 'trigger-regression-tests'
     name: Run CFLOW Suite
     runs-on: ubuntu-latest
     steps:
       - name: Display Inputs
         run: |
-          echo "Server: ${{ github.event.inputs.server }}"
-          echo "Test Query: ${{ github.event.inputs.test_query }}"
+          echo "Server: ${{ github.event.client_payload.server }}"
+          echo "Test Query: ${{ github.event.client_payload.test_query }}"
 
       - name: Run Tests
         run: |
-          echo "pytest -k '${{ github.event.inputs.test_query }}' --server '${{ github.event.inputs.server }}'"
+          echo "pytest -k '${{ github.event.client_payload.test_query }}' --server '${{ github.event.client_payload.server }}'"
