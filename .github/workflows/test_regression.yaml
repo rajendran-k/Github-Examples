@@ -42,5 +42,5 @@ jobs:
           
       - name: Run CFLOW Suite
         run: |
-          echo "Running CFLOW tests for server '${{ github.event.client_payload.server }}'"
+          echo "Running CFLOW tests for servers '${{ github.event.client_payload.server }}'"
           echo "Test Query: '${{ github.event.client_payload.test_query }}'"
