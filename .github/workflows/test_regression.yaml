@@ -2,45 +2,49 @@ name: Customer Flow Regressions
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # Adjust as per requirement
-  repository_dispatch:
-    types: [trigger-regression-tests]
-
-env:
-  ARTIFACTORY_REGISTRY: artifactory.air-watch.com/docker-local-aw
-  DOCKER_IMAGE: uem-automation
+    - cron: "*/5 * * * *" # Runs every Monday at 5 AM
+  workflow_dispatch:
+    inputs:
+      server:
+        description: "Server name for the tests"
+        required: true
+        default: "cnverizon"
+      test_query:
+        description: "Test query to filter tests"
+        required: true
+        default: "verizon"
 
 jobs:
-  trigger_test_run:
-    name: Trigger Repository Dispatch
+  trigger_dispatch:
+    if: github.event_name == 'schedule'
+    name: Trigger Workflow Dispatch
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'schedule' }} # Only run on 'schedule' events
-    steps:
-      - name: Debug Schedule Event
-        run: |
-          echo "Triggered by: ${{ github.event_name }}"
 
-      - name: Trigger repository dispatch with server details
+    steps:
+      - name: Trigger workflow_dispatch
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{"event_type": "trigger-regression-tests", "client_payload": {"server": "cnverizon", "test_query": "verizon", "tg_token": "${{ secrets.TG_TOKEN }}"}}' \
-            https://api.github.com/repos/${{ github.repository }}/dispatches
+            -d '{
+                  "ref": "main",
+                  "inputs": {
+                    "server": "cnverizon",
+                    "test_query": "verizon"
+                  }
+                }' \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow_id }}/dispatches
 
   test_cflow:
+    if: github.event_name == 'workflow_dispatch'
     name: Run CFLOW Suite
     runs-on: ubuntu-latest
-    needs: trigger_test_run # Ensure this waits for 'trigger_test_run'
-    if: ${{ github.event_name == 'repository_dispatch' && github.event.action == 'trigger-regression-tests' }}
     steps:
-      - name: Debug Repository Dispatch Event
+      - name: Display Inputs
         run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Action: ${{ github.event.action }}"
-          echo "Payload: ${{ toJson(github.event.client_payload) }}"
-          
-      - name: Run CFLOW Suite
+          echo "Server: ${{ github.event.inputs.server }}"
+          echo "Test Query: ${{ github.event.inputs.test_query }}"
+
+      - name: Run Tests
         run: |
-          echo "Running CFLOW tests for servers '${{ github.event.client_payload.server }}'"
-          echo "Test Query: '${{ github.event.client_payload.test_query }}'"
+          echo "pytest -k '${{ github.event.inputs.test_query }}' --server '${{ github.event.inputs.server }}'"
