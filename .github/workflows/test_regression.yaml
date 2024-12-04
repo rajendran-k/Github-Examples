@@ -2,27 +2,32 @@ name: Customer Flow Regressions
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # Runs every 5 minutes (adjust as needed)
+    - cron: "*/5 * * * *" # Adjust for production
   repository_dispatch:
     types: [trigger-regression-tests]
+
+env:
+  ARTIFACTORY_REGISTRY: artifactory.air-watch.com/docker-local-aw
+  DOCKER_IMAGE: uem-automation
 
 jobs:
   trigger_test_run:
     name: Trigger Repository Dispatch
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'schedule' }} # Only run on 'schedule' events
     steps:
       - name: Trigger repository dispatch with server details
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{"event_type": "trigger-regression-tests", "client_payload": {"server": "cnverizon", "test_query": "verizon", "tg_token": "asd"}}' \
+            -d '{"event_type": "trigger-regression-tests", "client_payload": {"server": "cnverizon", "test_query": "verizon", "tg_token": "${{ secrets.TG_TOKEN }}"}}' \
             https://api.github.com/repos/${{ github.repository }}/dispatches
 
   test_cflow:
     name: Run CFLOW Suite
     runs-on: ubuntu-latest
-    needs: trigger_test_run
+    needs: trigger_test_run # Ensure 'test_cflow' waits for 'trigger_test_run'
     if: ${{ github.event_name == 'repository_dispatch' && github.event.action == 'trigger-regression-tests' }}
     steps:
       - name: Print Test Query
