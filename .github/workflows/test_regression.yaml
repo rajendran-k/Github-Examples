@@ -17,7 +17,8 @@ jobs:
     if: ${{ github.event_name == 'schedule' }} # Only run on 'schedule' events
     steps:
       - name: Debug Schedule Event
-        run: echo "Triggered by: ${{ github.event_name }}"
+        run: |
+          echo "Triggered by: ${{ github.event_name }}"
 
       - name: Trigger repository dispatch with server details
         run: |
@@ -41,5 +42,5 @@ jobs:
           
       - name: Run CFLOW Suite
         run: |
-          echo "Running CFLOW tests for server '${{ github.event.client_payload.server }}'"
+          echo "Running CFLOW tests for servers '${{ github.event.client_payload.server }}'"
           echo "Test Query: '${{ github.event.client_payload.test_query }}'"
