@@ -1,0 +1,36 @@
+name: Customer Flow Regressions
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  repository_dispatch:
+    types: [trigger-regression-tests]
+jobs:
+  trigger_test_run:
+    name: Trigger Repository Dispatch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger repository dispatch with server details
+        run: |
+          case "${{ github.event.schedule }}" in
+            "*/5 * * * *") 
+              curl -X POST \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                -d '{"event_type": "trigger-regression-tests", "client_payload": {"server": "cnverizon", "test_query": "verizon", "tg_token": "yyyyy"}}' \
+                https://api.github.com/repos/${{ github.repository }}/dispatches
+              ;;
+            *) 
+              echo "Unknown schedule triggered"; exit 1 
+              ;;
+          esac
+
+  test_cflow:
+    name: Run CFLOW Suite
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'repository_dispatch' && github.event.action == 'trigger-regression-tests' }}
+    steps:
+      - name: Run CFLOW suite
+        run: |
+           echo "query is  '${{ github.event.client_payload.test_query }}' "
+           echo Running at latest last tech stack ${{ github.event.client_payload.server }}
