@@ -2,7 +2,7 @@ name: Customer Flow Regressions
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # Adjust for production
+    - cron: "*/5 * * * *" # Adjust as per requirement
   repository_dispatch:
     types: [trigger-regression-tests]
 
@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'schedule' }} # Only run on 'schedule' events
     steps:
+      - name: Debug Schedule Event
+        run: echo "Triggered by: ${{ github.event_name }}"
+
       - name: Trigger repository dispatch with server details
         run: |
           curl -X POST \
@@ -27,10 +30,16 @@ jobs:
   test_cflow:
     name: Run CFLOW Suite
     runs-on: ubuntu-latest
-    needs: trigger_test_run # Ensure 'test_cflow' waits for 'trigger_test_run'
+    needs: trigger_test_run # Ensure this waits for 'trigger_test_run'
     if: ${{ github.event_name == 'repository_dispatch' && github.event.action == 'trigger-regression-tests' }}
     steps:
-      - name: Print Test Query
+      - name: Debug Repository Dispatch Event
         run: |
-          echo "Query is '${{ github.event.client_payload.test_query }}'"
-          echo "Running on server '${{ github.event.client_payload.server }}'"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          echo "Payload: ${{ toJson(github.event.client_payload) }}"
+          
+      - name: Run CFLOW Suite
+        run: |
+          echo "Running CFLOW tests for server '${{ github.event.client_payload.server }}'"
+          echo "Test Query: '${{ github.event.client_payload.test_query }}'"
