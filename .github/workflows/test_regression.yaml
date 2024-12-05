@@ -20,7 +20,7 @@ jobs:
       - name: Set Variables Based on Cron
         id: set-env
         run: |
-          if [[ "${{ github.event.schedule }}" == "*/5 * * * *"" ]]; then
+          if [[ "${{ github.event.schedule }}" == "*/5 * * * *" ]]; then
             echo "server=cnverizon" >> $GITHUB_ENV
             echo "test_query=verizon" >> $GITHUB_ENV
             echo "tg_token=token_monday" >> $GITHUB_ENV
