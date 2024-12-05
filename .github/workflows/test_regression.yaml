@@ -2,9 +2,13 @@ name: Customer Flow Regressions
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # Runs every Monday at 5 AM
+    - cron: "*/5 * * * *" # Monday 5 AM
   repository_dispatch:
     types: [trigger-regression-tests]
+
+env:
+  ARTIFACTORY_REGISTRY: artifactory.air-watch.com/docker-local-aw
+  DOCKER_IMAGE: uem-automation
 
 jobs:
   trigger_dispatch:
@@ -13,24 +17,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger repository dispatch with server details
+      - name: Set Variables Based on Cron
+        id: set-env
+        run: |
+          if [[ "${{ github.event.schedule }}" == "*/5 * * * *"" ]]; then
+            echo "server=cnverizon" >> $GITHUB_ENV
+            echo "test_query=verizon" >> $GITHUB_ENV
+            echo "tg_token=token_monday" >> $GITHUB_ENV
+          else
+            echo "Unknown cron schedule"
+            exit 1
+          fi
+
+      - name: Send Repository Dispatch
         run: |
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d '{"event_type": "trigger-regression-tests", "client_payload": {"server": "cnverizon", "test_query": "verizon"}}' \
+            -d "{
+                  \"event_type\": \"trigger-regression-tests\",
+                  \"client_payload\": {
+                    \"server\": \"${{ env.server }}\",
+                    \"test_query\": \"${{ env.test_query }}\",
+                    \"tg_token\": \"${{ env.tg_token }}\"
+                  }
+                }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
 
   test_cflow:
     if: github.event_name == 'repository_dispatch' && github.event.action == 'trigger-regression-tests'
     name: Run CFLOW Suite
     runs-on: ubuntu-latest
+
     steps:
-      - name: Display Inputs
+      - name: Print Inputs
         run: |
           echo "Server: ${{ github.event.client_payload.server }}"
           echo "Test Query: ${{ github.event.client_payload.test_query }}"
-
-      - name: Run Tests
-        run: |
-          echo "pytest -k '${{ github.event.client_payload.test_query }}' --server '${{ github.event.client_payload.server }}'"
+          echo "TG Token: ${{ github.event.client_payload.tg_token }}"
