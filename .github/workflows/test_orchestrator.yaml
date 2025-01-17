@@ -25,6 +25,8 @@ jobs:
           pip install pytest
       - name: Run test
         run: |
+          cd src
+          ls
           pytest "${{ env.TEST_QUERY }}"
       - name: Slack Notification
         if: env.SLACK
