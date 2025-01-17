@@ -23,5 +23,5 @@ jobs:
           pip install pytest
       - name: Run test
         run: |
-          pytest \"${{ env.TEST_QUERY }}\" -n auto -o 'rp_launch=${{ env.environment }}'"
+          pytest "${{ env.TEST_QUERY }}"
 

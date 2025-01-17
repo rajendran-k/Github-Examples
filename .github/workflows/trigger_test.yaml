@@ -7,7 +7,7 @@ on:
   workflow_dispatch: 
 env:
   ENVIRONMENT: cn899
-  TEST_QUERY: '-m api'
+  TEST_QUERY: "-m api"
 jobs:
   trigger_dispatch:
     name: Trigger Repository Dispatch
