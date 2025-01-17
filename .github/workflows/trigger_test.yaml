@@ -1,0 +1,30 @@
+name: Customer trigger
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch: 
+env:
+  ENVIRONMENT: cn899
+  TEST_QUERY: uem-automation
+jobs:
+  trigger_dispatch:
+    name: Trigger Repository Dispatch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Repository Dispatch
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{
+                  \"event_type\": \"trigger-tests\",
+                  \"client_payload\": {
+                    \"ENVIRONMENT\": \"${{ env.ENVIRONMENT }}\",
+                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\"
+                  }
+                }" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches
+
+
+

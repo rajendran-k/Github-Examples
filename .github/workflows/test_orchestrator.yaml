@@ -1,0 +1,23 @@
+name: Test Orchestrator
+
+on:
+  repository_dispatch:
+    types: [trigger-tests]
+
+jobs:
+  test_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set defaults for client payload
+        run: |
+          echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || 'default-environment' }}" >> $GITHUB_ENV
+          echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || 'pytest -m api' }}" >> $GITHUB_ENV
+
+      - name: Test Runs
+        run: |
+          echo "Environment: ${{ env.ENVIRONMENT }}" 
+          echo "Test Query: ${{ env.TEST_QUERY }}"
+
+      - name: Pytest
+        run: |
+          pip install pytest
