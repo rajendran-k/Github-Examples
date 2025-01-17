@@ -23,7 +23,7 @@ jobs:
                   \"event_type\": \"trigger-tests\",
                   \"client_payload\": {
                     \"ENVIRONMENT\": \"${{ env.ENVIRONMENT }}\",
-                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\"
+                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\",
                     \"SLACK\": \"${{ env.SLACK }}\"
                   }
                 }" \
