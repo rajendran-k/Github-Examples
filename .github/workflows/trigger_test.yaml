@@ -23,8 +23,7 @@ jobs:
                   \"event_type\": \"trigger-tests\",
                   \"client_payload\": {
                     \"ENVIRONMENT\": \"${{ env.ENVIRONMENT }}\",
-                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\",
-                    \"SLACK\": \"${{ env.SLACK }}\"
+                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\"
                   }
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
