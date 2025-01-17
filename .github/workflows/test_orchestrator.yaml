@@ -28,7 +28,7 @@ jobs:
       - name: Run test
         run: |
           ls
-          cd /src
+          cd src
           pytest ${{ env.TEST_QUERY }}
       - name: Slack Notification
         if: env.SLACK
