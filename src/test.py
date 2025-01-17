@@ -5,7 +5,7 @@ import pytest
 def sum_function(a, b):
     return a + b
 
-@pytest.mark.API
+@pytest.mark.api
 def test_sum_function():
     a, b = 5, 10
     expected_result = 15

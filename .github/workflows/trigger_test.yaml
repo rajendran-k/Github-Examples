@@ -24,6 +24,7 @@ jobs:
                   \"client_payload\": {
                     \"ENVIRONMENT\": \"${{ env.ENVIRONMENT }}\",
                     \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\"
+                    \"SLACK\": \"${{ env.SLACK }}\"
                   }
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
