@@ -40,7 +40,7 @@ _italics_
 __bold__
 ~~striketrhough~~
 
-## Code
+## Code s
 
 ### Inline code
 
