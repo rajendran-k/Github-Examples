@@ -4,8 +4,6 @@ on:
     types: [trigger-tests]
 
 jobs:
-  run_if_success:
-
   test_run:
     runs-on: ubuntu-latest
     steps:
