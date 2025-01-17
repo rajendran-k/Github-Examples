@@ -8,7 +8,7 @@ on:
 env:
   ENVIRONMENT: cn899
   TEST_QUERY: test.py
-  SLACK: false
+  SLACK: true
 jobs:
   trigger_dispatch:
     name: Trigger Repository Dispatch
@@ -23,7 +23,8 @@ jobs:
                   \"event_type\": \"trigger-tests\",
                   \"client_payload\": {
                     \"ENVIRONMENT\": \"${{ env.ENVIRONMENT }}\",
-                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\"
+                    \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\",
+                    \"SLACK\": \"${{ env.SLACK }}\"
                   }
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
