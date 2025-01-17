@@ -13,7 +13,7 @@ jobs:
         run: |
           echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }}" >> $GITHUB_ENV
           echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || env.DEFAULT_TEST_QUERY }}" >> $GITHUB_ENV
-          echo "The shared variable is: ${{ needs.run_if_success.outputs.ENVIRONMENT }}"
+          echo "The shared variable is: ${{ env.ENVIRONMENT }}"
       - name: Pytest
         run: |
           pip install pytest
