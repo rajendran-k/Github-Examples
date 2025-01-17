@@ -33,6 +33,6 @@ jobs:
       - name: Slack Notification
         if: env.SLACK
         run: |
-            pytest "${{ env.TEST_QUERY }}"
+            pytest "${{ env.SLACK }}"
 
 
