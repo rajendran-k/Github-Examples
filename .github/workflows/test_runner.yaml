@@ -1,5 +1,4 @@
 name: Test Runner
-
 on:
   repository_dispatch:
     types: [trigger-tests]
@@ -18,4 +17,4 @@ jobs:
       - name: Pytest
         run: |
           pip install pytest
-          
+
