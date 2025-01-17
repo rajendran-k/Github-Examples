@@ -1,0 +1,21 @@
+name: Test Runner
+
+on:
+  repository_dispatch:
+    types: [trigger-tests]
+
+jobs:
+  run_if_success:
+
+  test_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Runs
+        run: |
+          echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }}" >> $GITHUB_ENV
+          echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || env.DEFAULT_TEST_QUERY }}" >> $GITHUB_ENV
+          echo "The shared variable is: ${{ needs.run_if_success.outputs.ENVIRONMENT }}"
+      - name: Pytest
+        run: |
+          pip install pytest
+          
