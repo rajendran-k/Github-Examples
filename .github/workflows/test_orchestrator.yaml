@@ -30,9 +30,10 @@ jobs:
           ls
           cd src
           pytest ${{ env.TEST_QUERY }}
+
       - name: Slack Notification
-        if: env.SLACK
+        if: env.SLACK == 'true'
         run: |
-            pytest "${{ env.SLACK }}"
+            echo "Slack is enabled"
 
 
