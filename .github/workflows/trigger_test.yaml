@@ -7,7 +7,7 @@ on:
   workflow_dispatch: 
 env:
   ENVIRONMENT: cn899
-  TEST_QUERY: --collect-only -m "api"
+  TEST_QUERY: test.py
   SLACK: false
 jobs:
   trigger_dispatch:
