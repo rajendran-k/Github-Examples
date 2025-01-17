@@ -12,11 +12,13 @@ jobs:
         run: |
           echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || 'default-environment' }}" >> $GITHUB_ENV
           echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || 'pytest -m api' }}" >> $GITHUB_ENV
+          echo "SLACK=${{ github.event.client_payload.TEST_QUERY || false }}" >> $GITHUB_ENV
 
       - name: Test Runs
         run: |
           echo "Environment: ${{ env.ENVIRONMENT }}" 
           echo "Test Query: ${{ env.TEST_QUERY }}"
+          echo "SLACK: ${{ env.SLACK }}"
 
       - name: Pytest
         run: |
@@ -24,4 +26,9 @@ jobs:
       - name: Run test
         run: |
           pytest "${{ env.TEST_QUERY }}"
+      - name: Slack Notification
+        if: env.SLACK
+        run: |
+            pytest "${{ env.TEST_QUERY }}"
+
 
