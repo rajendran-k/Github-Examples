@@ -3,6 +3,10 @@ name: Test Orchestrator
 on:
   repository_dispatch:
     types: [trigger-tests]
+env:
+  DEFAULT_ENVIRONMENT: test
+  DEFAULT_TEST_QUERY: pytest -m api 
+  
 
 jobs:
   test_run:
@@ -10,8 +14,8 @@ jobs:
     steps:
       - name: Set defaults for client payload
         run: |
-          echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || 'default-environment' }}" >> $GITHUB_ENV
-          echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || 'pytest -m api' }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }}" >> $GITHUB_ENV
+          echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || env.DEFAULT_TEST_QUERY }}" >> $GITHUB_ENV
           echo "SLACK=${{ github.event.client_payload.SLACK || false }}" >> $GITHUB_ENV
       - name: Checkout Repository
         uses: actions/checkout@v4
