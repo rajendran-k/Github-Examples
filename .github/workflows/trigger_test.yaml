@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ENVIRONMENT: Silverstrome
-      TEST_QUERY: test.py
+      TEST_QUERY: newtest.py
       SLACK: false
     steps:
       - name: Permissions
