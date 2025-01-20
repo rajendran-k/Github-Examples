@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch: 
 env:
-  ENVIRONMENT: cnworld
+  ENVIRONMENT: Monza
   TEST_QUERY: test.py
   SLACK: true
 jobs:
