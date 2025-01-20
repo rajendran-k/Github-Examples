@@ -10,8 +10,8 @@ env:
   TEST_QUERY: test.py
   SLACK: true
 jobs:
-  trigger_dispatch:
-    name: Trigger Repository Dispatch
+  trigger_dispatch_api:
+    name: Trigger Repository Dispatch API
     runs-on: ubuntu-latest
     steps:
       - name: Permissions
@@ -34,6 +34,19 @@ jobs:
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
 
+  trigger_dispatch_ui:
+    name: Trigger Repository Dispatch UI
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: Silverstrome
+      TEST_QUERY: test.py
+      SLACK: false
+    steps:
+      - name: Permissions
+        run: |
+          curl -I -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com
       - name: Send Repository Dispatch
         run: |
           curl -X POST \
@@ -48,6 +61,5 @@ jobs:
                   }
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
-
 
 
