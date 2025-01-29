@@ -1,5 +1,6 @@
 name: Test Orchestrator
 
+
 on:
   repository_dispatch:
     types: [trigger-tests]
@@ -34,6 +35,10 @@ jobs:
           ls
           cd src
           pytest ${{ env.TEST_QUERY }}
+      
+      - name: Extract Payload Data
+        run: |
+          echo "Triggered by: ${{ github.event.client_payload.triggered_by }}"
 
       - name: Slack Notification
         if: env.SLACK == 'true'
