@@ -1,0 +1,69 @@
+name: Run Test suite
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose SUT environment'
+        required: true
+        type: choice
+        options:
+          - cn1000
+          - cn8000
+          - cn8001
+          - cn8006
+          - cn8007
+          - cn8008
+          - cn8009
+          - cnboeing
+          - cnverizon
+          - cn8012
+        default: cn8006
+      suite_name:
+        description: 'Choose SUITE'
+        required: true
+        type: choice
+        options:
+          - API
+          - E2E
+          - Windows_E2E
+          - Android_E2E
+          - IOS_E2E
+          - MACOS_E2E
+        default: API
+
+env:
+  DOCKER_IMAGE: uem-automation
+  SLACK: false
+  TAG: main
+
+jobs:
+  test-run:
+    name: Run Test Suite
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu_latest
+    steps:
+      - name: Set variables for branch name and image tag
+        id: set-output
+        run: |
+          if [ -n "${GITHUB_HEAD_REF}" ]; then
+            BRANCH_NAME="${GITHUB_HEAD_REF}"
+          else
+            BRANCH_NAME="${GITHUB_REF_NAME}"
+          fi
+          TAG=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9]/-/g')
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "TAG=$TAG" >> $GITHUB_ENV
+      - name: Set test suite variables
+        run: |
+          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          if [[ "${{ github.event.inputs.suite_name }}" == "API" ]]; then
+            echo "TEST_COMMAND=pytest -m api -n auto" >> $GITHUB_ENV
+            echo "SUITE_NAME=UEM API tests | ${{ github.event.inputs.environment }} | $BRANCH_NAME" >> $GITHUB_ENV
+          fi
+          if [[ "${{ github.event.inputs.suite_name }}" == "E2E" ]]; then
+          echo "TEST_COMMAND=pytest -m e2e -n auto" >> $GITHUB_ENV
+            echo "SUITE_NAME=UEM E2E tests | ${{ github.event.inputs.environment }} | $BRANCH_NAME" >> $GITHUB_ENV
+          fi
+
+      
