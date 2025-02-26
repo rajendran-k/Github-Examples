@@ -1,6 +1,9 @@
 name: Run Test suite
 
 on:
+  push:
+    branches:
+      - dev
   workflow_dispatch:
     inputs:
       environment:
