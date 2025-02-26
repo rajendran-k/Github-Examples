@@ -60,13 +60,24 @@ jobs:
       - name: Set test suite variables
         run: |
           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
-          if [[ "${{ github.event.inputs.suite_name }}" == "API" ]]; then
-            echo "TEST_COMMAND=pytest -m api -n auto" >> $GITHUB_ENV
-            echo "SUITE_NAME=UEM API tests | ${{ github.event.inputs.environment }} | $BRANCH_NAME" >> $GITHUB_ENV
-          fi
-          if [[ "${{ github.event.inputs.suite_name }}" == "E2E" ]]; then
-          echo "TEST_COMMAND=pytest -m e2e -n auto" >> $GITHUB_ENV
-            echo "SUITE_NAME=UEM E2E tests | ${{ github.event.inputs.environment }} | $BRANCH_NAME" >> $GITHUB_ENV
-          fi
+          case "${{ github.event.inputs.suite_name }}" in
+            "API")
+              echo "TEST_COMMAND=pytest -m api -n auto" >> $GITHUB_ENV
+              ;;
+            "Windows_E2E")
+              echo "TEST_COMMAND=pytest -m 'windows and e2e' -n8 --reruns 1" >> $GITHUB_ENV
+              ;;
+            "Android_E2E")
+              echo "TEST_COMMAND=pytest -m 'android and e2e' -n4 --reruns 1" >> $GITHUB_ENV
+              ;;\
+            "IOS_E2E")
+              echo "TEST_COMMAND=pytest -m 'ios and e2e' -n4 --reruns 1" >> $GITHUB_ENV
+              ;;
+            "MACOS_E2E")
+              echo "TEST_COMMAND=pytest -m 'macos and e2e' -n3 --reruns 1" >> $GITHUB_ENV
+              ;;
+          esac
+      
+          echo "SUITE_NAME=UEM ${{ github.event.inputs.suite_name }} tests | ${{ github.event.inputs.environment }} | $BRANCH_NAME" >> $GITHUB_ENV
 
       
