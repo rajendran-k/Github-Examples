@@ -41,7 +41,7 @@ jobs:
   test-run:
     name: Run Test Suite
     if: ${{ github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu_latest
+    runs-on: ubuntu-latest
     steps:
       - name: Set variables for branch name and image tag
         id: set-output
