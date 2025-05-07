@@ -61,6 +61,7 @@ jobs:
       - name: Set test suite variables
         run: |
           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          echo "CUSTOM_RUN=${{ github.event.inputs.custom_run }}" >> $GITHUB_ENV
           case "${{ github.event.inputs.suite_name }}" in
             "API")
               echo "TEST_COMMAND=pytest -m api -n auto" >> $GITHUB_ENV
@@ -70,7 +71,7 @@ jobs:
               ;;
             "Android_E2E")
               echo "TEST_COMMAND=pytest -m 'android and e2e' -n4 --reruns 1" >> $GITHUB_ENV
-              ;;\
+              ;;
             "IOS_E2E")
               echo "TEST_COMMAND=pytest -m 'ios and e2e' -n4 --reruns 1" >> $GITHUB_ENV
               ;;
@@ -78,15 +79,13 @@ jobs:
               echo "TEST_COMMAND=pytest -m 'macos and e2e' -n3 --reruns 1" >> $GITHUB_ENV
               ;;
             "Custom_E2E")
-              if [ -z "$CUSTOM_RUN" ]; then
+              if [ -z "${CUSTOM_RUN}" ]; then
                 echo "Error: 'Custom_E2E' selected but 'custom_run' input is empty."
                 exit 1
               fi
-                echo "Using custom run command: $CUSTOM_RUN"
-                echo "TEST_COMMAND=$CUSTOM_RUN" >> $GITHUB_ENV
+              echo "Using custom run command: ${CUSTOM_RUN}"
+              echo "TEST_COMMAND=${CUSTOM_RUN}" >> $GITHUB_ENV
               ;;
           esac
-      
-          echo "SUITE_NAME=UEM ${{ github.event.inputs.suite_name }} tests | ${{ github.event.inputs.environment }} | TEST_COMMAND=$TEST_COMMAND | BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-      
+          echo "SUITE_NAME=UEM ${{ github.event.inputs.suite_name }} tests | ${{ github.event.inputs.environment }} | TEST_COMMAND=$TEST_COMMAND | BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
