@@ -35,7 +35,7 @@ on:
       custom_run:
         description: 'Custom pytest command (used only with Custom_E2E)'
         required: false
-        default: 'pytest'
+        default: ''
 env:
   DOCKER_IMAGE: uem-automation
   SLACK: false
@@ -87,6 +87,6 @@ jobs:
               ;;
           esac
       
-          echo "SUITE_NAME=UEM ${{ github.event.inputs.suite_name }} tests | ${{ github.event.inputs.environment }} | $BRANCH_NAME" >> $GITHUB_ENV
+          echo "SUITE_NAME=UEM ${{ github.event.inputs.suite_name }} tests | ${{ github.event.inputs.environment }} | "TEST_COMMAND=$TEST_COMMAND" >> $GITHUB_ENV" $BRANCH_NAME" >> $GITHUB_ENV
 
       
