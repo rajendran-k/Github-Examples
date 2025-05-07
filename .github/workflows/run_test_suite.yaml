@@ -30,8 +30,12 @@ on:
           - Android_E2E
           - IOS_E2E
           - MACOS_E2E
+          - Custom_E2E
         default: API
-
+      custom_run:
+        description: 'Custom pytest command (used only with Custom_E2E)'
+        required: false
+        default: 'pytest'
 env:
   DOCKER_IMAGE: uem-automation
   SLACK: false
@@ -72,6 +76,14 @@ jobs:
               ;;
             "MACOS_E2E")
               echo "TEST_COMMAND=pytest -m 'macos and e2e' -n3 --reruns 1" >> $GITHUB_ENV
+              ;;
+            "Custom_E2E")
+              if [ -z "$CUSTOM_RUN" ]; then
+                echo "Error: 'Custom_E2E' selected but 'custom_run' input is empty."
+                exit 1
+              fi
+                echo "Using custom run command: $CUSTOM_RUN"
+                echo "TEST_COMMAND=$CUSTOM_RUN" >> $GITHUB_ENV
               ;;
           esac
       
