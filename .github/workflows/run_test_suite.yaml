@@ -36,6 +36,7 @@ on:
         description: 'Custom pytest command (used only with Custom_E2E)'
         required: false
         default: ''
+
 env:
   DOCKER_IMAGE: uem-automation
   SLACK: false
@@ -58,34 +59,43 @@ jobs:
           TAG=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9]/-/g')
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
           echo "TAG=$TAG" >> $GITHUB_ENV
+
       - name: Set test suite variables
         run: |
           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
-          echo "CUSTOM_RUN=${{ github.event.inputs.custom_run }}" >> $GITHUB_ENV
-          case "${{ github.event.inputs.suite_name }}" in
+          
+          SUITE="${{ github.event.inputs.suite_name }}"
+          CUSTOM_RUN="${{ github.event.inputs.custom_run || '' }}"
+
+          case "$SUITE" in
             "API")
-              echo "TEST_COMMAND=pytest -m api -n auto" >> $GITHUB_ENV
+              TEST_COMMAND="pytest -m api -n auto"
               ;;
             "Windows_E2E")
-              echo "TEST_COMMAND=pytest -m 'windows and e2e' -n8 --reruns 1" >> $GITHUB_ENV
+              TEST_COMMAND="pytest -m 'windows and e2e' -n8 --reruns 1"
               ;;
             "Android_E2E")
-              echo "TEST_COMMAND=pytest -m 'android and e2e' -n4 --reruns 1" >> $GITHUB_ENV
+              TEST_COMMAND="pytest -m 'android and e2e' -n4 --reruns 1"
               ;;
             "IOS_E2E")
-              echo "TEST_COMMAND=pytest -m 'ios and e2e' -n4 --reruns 1" >> $GITHUB_ENV
+              TEST_COMMAND="pytest -m 'ios and e2e' -n4 --reruns 1"
               ;;
             "MACOS_E2E")
-              echo "TEST_COMMAND=pytest -m 'macos and e2e' -n3 --reruns 1" >> $GITHUB_ENV
+              TEST_COMMAND="pytest -m 'macos and e2e' -n3 --reruns 1"
               ;;
             "Custom_E2E")
-              if [ -z "${CUSTOM_RUN}" ]; then
+              if [ -z "$CUSTOM_RUN" ] || [ "$CUSTOM_RUN" = "null" ]; then
                 echo "Error: 'Custom_E2E' selected but 'custom_run' input is empty."
                 exit 1
               fi
-              echo "Using custom run command: ${CUSTOM_RUN}"
-              echo "TEST_COMMAND=${CUSTOM_RUN}" >> $GITHUB_ENV
+              echo "Using custom run command: $CUSTOM_RUN"
+              TEST_COMMAND="$CUSTOM_RUN"
+              ;;
+            *)
+              echo "Error: Unknown suite selected."
+              exit 1
               ;;
           esac
 
-          echo "SUITE_NAME=UEM ${{ github.event.inputs.suite_name }} tests | ${{ github.event.inputs.environment }} | TEST_COMMAND=$TEST_COMMAND | BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "TEST_COMMAND=$TEST_COMMAND" >> $GITHUB_ENV
+          echo "SUITE_NAME=UEM $SUITE tests | ${{ github.event.inputs.environment }} | TEST_COMMAND=$TEST_COMMAND | BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
