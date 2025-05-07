@@ -30,10 +30,10 @@ on:
           - Android_E2E
           - IOS_E2E
           - MACOS_E2E
-          - Custom_E2E
+          - Custom_suite
         default: API
       custom_run:
-        description: 'Custom pytest command (used only with Custom_E2E)'
+        description: 'Custom pytest command (used only with Custom_suite)'
         required: false
         default: ''
 
@@ -65,7 +65,7 @@ jobs:
           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
           
           SUITE="${{ github.event.inputs.suite_name }}"
-          CUSTOM_RUN="${{ github.event.inputs.custom_run || '' }}"
+          CUSTOM_RUN="${{ github.event.inputs.custom_run }}"
 
           case "$SUITE" in
             "API")
@@ -83,13 +83,13 @@ jobs:
             "MACOS_E2E")
               TEST_COMMAND="pytest -m 'macos and e2e' -n3 --reruns 1"
               ;;
-            "Custom_E2E")
+            "Custom_suite")
               if [ -z "$CUSTOM_RUN" ] || [ "$CUSTOM_RUN" = "null" ]; then
-                echo "Error: 'Custom_E2E' selected but 'custom_run' input is empty."
+                echo "Error: 'Custom_suite' selected but 'custom_run' input is empty."
                 exit 1
               fi
               echo "Using custom run command: $CUSTOM_RUN"
-              TEST_COMMAND="$CUSTOM_RUN"
+              echo "TEST_COMMAND=$CUSTOM_RUN" >> $GITHUB_ENV
               ;;
             *)
               echo "Error: Unknown suite selected."
