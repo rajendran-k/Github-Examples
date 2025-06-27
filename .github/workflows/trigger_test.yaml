@@ -47,7 +47,8 @@ jobs:
           echo "- **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Primary Workflow URL:** [View run](${{
             github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-          echo "- The orchestrator workflow will be triggered shortly." >> $GITHUB_STEP_SUMMARY
+          echo "- **Search Orchestrator Run:** [Click here](https://github.com/${{ github.repository }}/actions?query=${{ env.RUN_ID }})" >> $GITHUB_STEP_SUMMARY
+
 
   trigger_dispatch_ui:
     name: Trigger Repository Dispatch UI
