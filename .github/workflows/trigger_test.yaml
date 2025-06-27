@@ -19,6 +19,10 @@ jobs:
           curl -I -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                -H "Accept: application/vnd.github.v3+json" \
                https://api.github.com
+      - name: Generate unique RUN_ID
+        run: |
+          RUN_ID="test-suite-${{ github.run_id }}"
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
       - name: Send Repository Dispatch
         run: |
           curl -X POST \
@@ -29,10 +33,21 @@ jobs:
                   \"client_payload\": {
                     \"ENVIRONMENT\": \"${{ env.ENVIRONMENT }}\",
                     \"TEST_QUERY\": \"${{ env.TEST_QUERY }}\",
-                    \"SLACK\": \"${{ env.SLACK }}\"
+                    \"SLACK\": \"${{ env.SLACK }}\",
+                    \"RUN_ID\": \"${{ env.RUN_ID }}\",
+                    \"TRIGGER_URL\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                    \"TRIGGERED_BY\": \"${{ github.actor }}\"
                   }
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
+      - name: Add trigger summary
+        run: |
+          echo "## ✅ Test Orchestrator Triggered" >> $GITHUB_STEP_SUMMARY
+          echo "- **RUN ID:** ${{ env.RUN_ID }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Primary Workflow URL:** [View run](${{
+            github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- The orchestrator workflow will be triggered shortly." >> $GITHUB_STEP_SUMMARY
 
   trigger_dispatch_ui:
     name: Trigger Repository Dispatch UI

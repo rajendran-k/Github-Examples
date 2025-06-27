@@ -52,6 +52,11 @@ jobs:
         run: |
           echo "Event triggered: ${{ github.event.action }}"
           echo '${{ toJson(github.event) }}'
+      - name: Log trigger metadata
+        run: |
+          echo "Triggered by: ${{ github.event.client_payload.TRIGGERED_BY }}"
+          echo "Triggered from: ${{ github.event.client_payload.TRIGGER_URL }}"
+          echo "RUN ID: ${{ github.event.client_payload.RUN_ID }}"
 
       - name: Slack Notification
         if: env.SLACK == 'true'
