@@ -13,18 +13,6 @@ jobs:
   test_run:
     runs-on: ubuntu-latest
     steps:
-      - name: Get Latest Run ID of Caller Workflow
-        run: |
-          echo "Fetching latest run of Workflow A..."
-          latest_run=$(curl -s -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?event=push&status=completed" | jq -r '.workflow_runs[0].id')
-
-          echo "Caller Workflow Run ID: $latest_run"
-          echo "CALLER_RUN_ID=$latest_run" >> $GITHUB_ENV
-
-      - name: Use Caller Workflow Run ID
-        run: echo "The caller workflow run ID is ${{ env.CALLER_RUN_ID }}"
       - name: Set defaults for client payload
         run: |
           echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }}" >> $GITHUB_ENV
