@@ -6,8 +6,8 @@ on:
       - main
   workflow_dispatch: 
 env:
-  ENVIRONMENT: Monza
-  TEST_QUERY: test.py
+  ENVIRONMENT: Japan
+  TEST_QUERY: test2.py
   SLACK: true
 jobs:
   trigger_dispatch_api:
@@ -39,14 +39,4 @@ jobs:
                   }
                 }" \
             https://api.github.com/repos/${{ github.repository }}/dispatches
-      - name: Add trigger summary
-        run: |
-          echo "## ✅ Test Orchestrator Triggered" >> $GITHUB_STEP_SUMMARY
-          echo "- **RUN ID:** ${{ env.RUN_ID }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Primary Workflow URL:** [View run](${{
-            github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-          
-
-
-  
+     
