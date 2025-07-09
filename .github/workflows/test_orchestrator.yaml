@@ -15,16 +15,16 @@ jobs:
     steps:
       - name: Set defaults for client payload
         run: |
-          echo "ENVIRONMENT=${{ github.event.client_payload.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }}" >> $GITHUB_ENV
-          echo "TEST_QUERY=${{ github.event.client_payload.TEST_QUERY || env.DEFAULT_TEST_QUERY }}" >> $GITHUB_ENV
-          echo "SLACK=${{ github.event.client_payload.SLACK || false }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT=${{ github.event.client_payload.CONFIG.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }}" >> $GITHUB_ENV
+          echo "TEST_QUERY=${{ github.event.client_payload.CONFIG.TEST_QUERY || env.DEFAULT_TEST_QUERY }}" >> $GITHUB_ENV
+          echo "SLACK=${{ github.event.client_payload.CONFIG.SLACK || false }}" >> $GITHUB_ENV
 
       - name: Add trigger metadata to summary
         run: |
           echo "## 🧪 Tests Orchestrator Metadata" >> $GITHUB_STEP_SUMMARY
-          echo "- Triggered by: ${{ github.event.client_payload.TRIGGERED_BY }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Triggered from: [View Primary Run](${{ github.event.client_payload.TRIGGER_URL }})" >> $GITHUB_STEP_SUMMARY
-          echo "- RUN ID: ${{ github.event.client_payload.RUN_ID }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Triggered by: ${{ github.event.client_payload.CONFIG.TRIGGERED_BY }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Triggered from: [View Primary Run](${{ github.event.client_payload.CONFIG.TRIGGER_URL }})" >> $GITHUB_STEP_SUMMARY
+          echo "- RUN ID: ${{ github.event.client_payload.CONFIG.RUN_ID }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -50,9 +50,9 @@ jobs:
           echo '${{ toJson(github.event) }}'
       - name: Log trigger metadata
         run: |
-          echo "Triggered by: ${{ github.event.client_payload.TRIGGERED_BY }}"
-          echo "Triggered from: ${{ github.event.client_payload.TRIGGER_URL }}"
-          echo "RUN ID: ${{ github.event.client_payload.RUN_ID }}"
+          echo "Triggered by: ${{ github.event.client_payload.CONFIG.TRIGGERED_BY }}"
+          echo "Triggered from: ${{ github.event.client_payload.CONFIG.TRIGGER_URL }}"
+          echo "RUN ID: ${{ github.event.client_payload.CONFIG.RUN_ID }}"
 
       - name: Slack Notification
         if: env.SLACK == 'true'
