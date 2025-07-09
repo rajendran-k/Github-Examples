@@ -1,14 +1,13 @@
 name: Customer trigger
+
 on:
-  push:
-    branches:
-      - dev
-      - main
-  workflow_dispatch: 
+  workflow_dispatch:
+
 env:
   ENVIRONMENT: Japan
-  TEST_QUERY: test2.py
+  TEST_QUERY: test.py
   SLACK: true
+
 jobs:
   trigger_dispatch_api:
     name: Trigger Repository Dispatch API
@@ -40,4 +39,10 @@ jobs:
                 }' \
             https://api.github.com/repos/${{ github.repository }}/dispatches
 
-          - name: Log Trigger Metadata 
+      - name: Log Trigger Metadata
+        run: |
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "Test Query: ${{ env.TEST_QUERY }}"
+          echo "Slack: ${{ env.SLACK }}"
+          echo "Run ID: ${{ github.RUN_ID }}"
