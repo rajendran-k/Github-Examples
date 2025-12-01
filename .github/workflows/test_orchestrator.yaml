@@ -1,4 +1,5 @@
-name: Test Orchestrator ${{ github.event.client_payload.CONFIG.ENVIRONMENT }}
+name: Test Orchestrator 
+run-name: ${{ github.event.client_payload.CONFIG.ENVIRONMENT }}
 
 
 on:
