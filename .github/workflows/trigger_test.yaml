@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  ENVIRONMENT: Japan
+  ENVIRONMENT: America
   TEST_QUERY: test.py
   SLACK: true
 
