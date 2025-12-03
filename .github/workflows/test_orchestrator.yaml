@@ -8,7 +8,7 @@ env:
   DEFAULT_TEST_QUERY: pytest -m api 
 
 
-run-name: "${{ github.event.client_payload.CONFIG.ENVIRONMENT || 'test' }} : ${{ github.event.client_payload.CONFIG.TEST_QUERY || 'pytest -m api' }}"
+run-name: "Triggered by: ${{ github.event.client_payload.CONFIG.ENVIRONMENT || 'test' }} : ${{ github.event.client_payload.CONFIG.TEST_QUERY || 'pytest -m api' }}"
 
 
 jobs:
