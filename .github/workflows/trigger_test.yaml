@@ -28,8 +28,6 @@ jobs:
                   "event_type": "trigger-tests",
                   "client_payload": {
                     "CONFIG": {
-                      "ENVIRONMENT": "${{ env.ENVIRONMENT }}",
-                      "TEST_QUERY": "${{ env.TEST_QUERY }}",
                       "SLACK": "${{ env.SLACK }}",
                       "RUN_ID": "${{ github.RUN_ID }}",
                       "TRIGGER_URL": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",

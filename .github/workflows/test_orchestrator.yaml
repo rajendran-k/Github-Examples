@@ -8,6 +8,8 @@ on:
 env:
   DEFAULT_ENVIRONMENT: test
   DEFAULT_TEST_QUERY: pytest -m api 
+
+run-name: "${{ github.event.client_payload.CONFIG.ENVIRONMENT || env.DEFAULT_ENVIRONMENT}} :  ${{ github.event.client_payload.CONFIG.TEST_QUERY || env.DEFAULT_TEST_QUERY }}"
   
 
 jobs:
