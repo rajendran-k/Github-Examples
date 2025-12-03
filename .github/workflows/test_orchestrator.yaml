@@ -1,6 +1,4 @@
 name: Test Orchestrator 
-run-name: ${{ github.event.client_payload.CONFIG.ENVIRONMENT }}
-
 
 on:
   repository_dispatch:
