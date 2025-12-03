@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 env:
-  ENVIRONMENT: America
-  TEST_QUERY: test.py
+  ENVIRONMENT: London
+  TEST_QUERY: test2.py
   SLACK: true
 
 jobs:
