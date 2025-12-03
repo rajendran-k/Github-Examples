@@ -5,7 +5,7 @@ on:
 
 env:
   ENVIRONMENT: London
-  TEST_QUERY: test2.py
+  TEST_QUERY: test.py
   SLACK: true
 
 jobs:
