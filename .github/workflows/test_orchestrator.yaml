@@ -9,8 +9,6 @@ env:
 
 run-name: "${{ github.event.client_payload.CONFIG.ENVIRONMENT || env.DEFAULT_ENVIRONMENT }} :  ${{ github.event.client_payload.CONFIG.TEST_QUERY || env.DEFAULT_TEST_QUERY }}"
 
-run-name: "${{ github.event.client_payload.CONFIG.TRIGGERED_BY || env.DEFAULT_TRIGGERED_BY }} : ${{ github.event.client_payload.CONFIG.RUN_ID || env.DEFAULT_RUN_ID }}"
-  
 
 jobs:
   test_run:
